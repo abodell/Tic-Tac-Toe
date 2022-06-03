@@ -4,3 +4,27 @@
     padding: 0px;
     font-family: 'Orbitron', sans-serif;
 }
+
+body {
+    background-color: #C2DED1;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+    justify-content: center;
+    gap: 2rem;
+    color: #ECE5C7;
+    background-color: #354259;
+}
+
+.header > img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    -webkit-filter: invert(.9);
+    filter: invert(.9) saturate(1) brightness(1) contrast(100%) sepia(100%);
+}
+
