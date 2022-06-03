@@ -99,3 +99,38 @@ body {
   box-shadow: #ECE5C7 0 3px 7px inset;
   transform: translateY(2px);
 }
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.space {
+    background-color: #354259;
+    border: 2px solid #C2DED1;
+    width: 150px;
+    height: 150px;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    gap: 2rem;
+}
+
+.footer > a {
+    text-decoration: none;
+    color: #354259;
+    font-size: 22px;
+}
+
+.footer > a > img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
