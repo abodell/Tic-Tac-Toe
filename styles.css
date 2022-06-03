@@ -107,6 +107,33 @@ body {
   transform: translateY(2px);
 }
 
+.player-info {
+    display: flex;
+    align-items: center;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+    gap: 4rem;
+}
+
+.submit-button {
+    padding-top: 1.5rem;
+}
+
+.player-one, .player-two {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: #354259;
+    font-size: 20px;
+}
+
+input[type='text'] {
+    border-radius: 10px;
+    height: 1.5rem;
+    outline: none;
+    border: none;
+}
+
 .board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
