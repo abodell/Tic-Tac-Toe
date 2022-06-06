@@ -1,20 +1,13 @@
 "use strict";
 
-const Player = (marker, name) => {
+const Player = (marker) => {
     this.marker = marker;
-    this.name = name;
-
     const getMarker = () => {
         return marker;
     }
 
-    const getName = () => {
-        return name;
-    }
-
-    return {getMarker, getName};
+    return {getMarker};
 };
-
 
 const gameBoard = (() => {
     const board = [ // array representation of our board
@@ -243,21 +236,26 @@ const displayController = (() => {
     const impossible = document.querySelector("#impossible");
     const friend = document.querySelector("#friend");
     let isStart = false;
+    let gameSelected = false;
 
     easy.addEventListener('click', () => {
         mode.textContent = 'Game Mode: Easy';
+        gameSelected = true;
     });
 
     medium.addEventListener('click', () => {
         mode.textContent = 'Game Mode: Medium';
+        gameSelected = true;
     });
 
     impossible.addEventListener('click', () => {
         mode.textContent = 'Game Mode: Impossible';
+        gameSelected = true;
     });
 
     friend.addEventListener('click', () => {
         mode.textContent = 'Game Mode: Versus a Friend';
+        gameSelected = true;
     });
 
     startBtn.addEventListener('click', () => {
@@ -268,6 +266,7 @@ const displayController = (() => {
     restartBtn.addEventListener('click', () => {
         isStart = false;
         startBtn.textContent = 'Click Here to Start';
+        mode.textContent = "Select a Game Mode";
         gameController.restartGame();
         populateDisplay();
     });
@@ -275,7 +274,7 @@ const displayController = (() => {
     spaces.forEach((space) => {
         space.addEventListener('click', (event) => {
             // if the game is over or the space is already occupied, we don't want to allow a click
-            if (gameController.getIsWinner() || !isStart || event.target.textContent !== '') {
+            if (gameController.getIsWinner() || !isStart || event.target.textContent !== '' || !gameSelected) {
                 return;
             } else {
                 gameController.playerAction(parseInt(event.target.dataset.row), parseInt(event.target.dataset.col));
@@ -292,7 +291,7 @@ const displayController = (() => {
 
     const changeMessage = (string) => {
         message.textContent = string;
-    }
+    };
 
     return {changeMessage};
 

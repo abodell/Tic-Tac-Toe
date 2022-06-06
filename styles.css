@@ -39,6 +39,7 @@ body {
 
 .content .topbar > h2 {
     color: #354259;
+    font-size: 20px;
 }
 
 .content .topbar {
@@ -51,7 +52,7 @@ body {
 }
 
 .content .message {
-    font-size: 24px;
+    font-size: 20px;
     padding-top: 1.5rem;
     padding-bottom: .5rem;
     color: #354259;
@@ -74,7 +75,7 @@ body {
   cursor: pointer;
   display: inline-flex;
   font-family: "Orbitron","JetBrains Mono",monospace;
-  height: 48px;
+  height: 40px;
   justify-content: center;
   line-height: 1;
   list-style: none;
@@ -90,7 +91,7 @@ body {
   touch-action: manipulation;
   white-space: nowrap;
   will-change: box-shadow,transform;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .btn:focus {
@@ -113,14 +114,6 @@ body {
     padding-top: 2rem;
     padding-bottom: 1rem;
     gap: 5rem;
-}
-
-
-input[type='text'] {
-    border-radius: 10px;
-    height: 1.5rem;
-    outline: none;
-    border: none;
 }
 
 .board {
