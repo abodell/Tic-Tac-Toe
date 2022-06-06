@@ -236,7 +236,29 @@ const displayController = (() => {
     const message = document.querySelector('.message');
     const restartBtn = document.querySelector('#restartbtn');
     const startBtn = document.querySelector("#startbtn")
+    const mode = document.querySelector('#mode');
+    // buttons for the different game modes
+    const easy = document.querySelector('#easy');
+    const medium = document.querySelector('#medium');
+    const impossible = document.querySelector("#impossible");
+    const friend = document.querySelector("#friend");
     let isStart = false;
+
+    easy.addEventListener('click', () => {
+        mode.textContent = 'Game Mode: Easy';
+    });
+
+    medium.addEventListener('click', () => {
+        mode.textContent = 'Game Mode: Medium';
+    });
+
+    impossible.addEventListener('click', () => {
+        mode.textContent = 'Game Mode: Impossible';
+    });
+
+    friend.addEventListener('click', () => {
+        mode.textContent = 'Game Mode: Versus a Friend';
+    });
 
     startBtn.addEventListener('click', () => {
         isStart = true;
@@ -248,7 +270,7 @@ const displayController = (() => {
         startBtn.textContent = 'Click Here to Start';
         gameController.restartGame();
         populateDisplay();
-    })
+    });
 
     spaces.forEach((space) => {
         space.addEventListener('click', (event) => {
