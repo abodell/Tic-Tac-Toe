@@ -234,9 +234,18 @@ const gameController = (() => {
 const displayController = (() => {
     const spaces = document.querySelectorAll('.space');
     const message = document.querySelector('.message');
-    const restartBtn = document.querySelector('#restartbtn')
+    const restartBtn = document.querySelector('#restartbtn');
+    const startBtn = document.querySelector("#startbtn")
+    let isStart = false;
+
+    startBtn.addEventListener('click', () => {
+        isStart = true;
+        startBtn.textContent = 'Game In Progress';
+    });
 
     restartBtn.addEventListener('click', () => {
+        isStart = false;
+        startBtn.textContent = 'Click Here to Start';
         gameController.restartGame();
         populateDisplay();
     })
@@ -244,7 +253,7 @@ const displayController = (() => {
     spaces.forEach((space) => {
         space.addEventListener('click', (event) => {
             // if the game is over or the space is already occupied, we don't want to allow a click
-            if (gameController.getIsWinner() || event.target.textContent !== '') {
+            if (gameController.getIsWinner() || !isStart || event.target.textContent !== '') {
                 return;
             } else {
                 gameController.playerAction(parseInt(event.target.dataset.row), parseInt(event.target.dataset.col));
