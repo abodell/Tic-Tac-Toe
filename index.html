@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <script defer src = 'app.js'></script>
 </head>
 <body>
     <div class="header">
@@ -24,9 +25,6 @@
                 <button type = 'button' class = 'btn'>Impossible</button>
             </div>
         </div>
-        <div class="message">
-            Player X's Turn
-        </div>
         <form class="player-info">
             <div class="player-one">
                 <label for = 'player1'>Player 1, enter your name</label>
@@ -40,6 +38,9 @@
                 <button type = 'submit' class = 'btn'>Start Game</button>
             </div>
         </form>
+        <div class="message">
+            Player X is is your turn
+        </div>
         <div class="board">
             <div class="space" data-row = '0' data-col= '0'></div>
             <div class="space" data-row = '0' data-col = '1'></div>

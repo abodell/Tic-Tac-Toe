@@ -5,11 +5,11 @@ const Player = (marker, name) => {
     this.name = name;
 
     const getMarker = () => {
-        return this.marker;
+        return marker;
     }
 
     const getName = () => {
-        return this.name;
+        return name;
     }
 
     return {getMarker, getName};
@@ -24,14 +24,14 @@ const gameBoard = (() => {
     ];
     // place the marker where the user wants, as long as its in bounds
     const placeMarker = (marker, row, col) => {
-        if (row > 3 || col > 3 || row < 1 || col < 1) {
+        if (row > 3 || col > 3 || row < 0 || col < 0) {
             return;
         }
         board[row][col] = marker;
     };
 
     const getPosition = (row, col) => {
-        if (row > 3 || col > 3 || row < 1 || col < 1) {
+        if (row > 3 || col > 3 || row < 0 || col < 0) {
             return;
         }
         return board[row][col];
@@ -50,9 +50,10 @@ const gameBoard = (() => {
 })();
 
 const gameController = (() => {
-    const player1 = new Player('X');
-    const player2 = new Player('O');
+    const player1 = Player('X', "");
+    const player2 = Player('O', "");
     const numToWin = 3;
+
 
     let isWinner = false;
     let isXTurn = true;
@@ -134,7 +135,7 @@ const gameController = (() => {
         }
 
         // reset consecutiveCount before going across the other diagonal
-        consecutiveCount = 0;
+        consecutiveCount = 1;
         // down and to the right
         for (let i = row - 1, j = col + 1; i >= 0 && j < numToWin; i--, j++) {
             if (gameBoard.getPosition(i, j) === marker) {
@@ -185,48 +186,45 @@ const gameController = (() => {
         isTie = false;
     }
 
-    const switchTurns = () => {
-        // switch the message on the screen to the other player
-        if (isXTurn) {
-            isXTurn = false;
-        } else {
-            isXTurn = true;
-        }
-    };
-
     // logic for the gameplay
     const playerAction = (row, col) => {
         if (isXTurn) {
             gameBoard.placeMarker(player1.getMarker(), row, col);
             if (checkForWin(row, col, player1.getMarker())) {
-                // update the message on the screen
+                displayController.changeMessage("Player " + player1.getMarker() + " has won the game!");
                 return;
             }
 
             if (checkTie()) {
-                // update the message on the screen
+                displayController.changeMessage('Game Ended in a Tie!');
                 return;
             }
 
-            switchTurns();
+            isXTurn = !isXTurn;
+            displayController.changeMessage("Player " + player2.getMarker() + " it is your turn");
             
         } else {
             gameBoard.placeMarker(player2.getMarker(), row, col);
             if (checkForWin(row, col, player2.getMarker())) {
-                // update the message on the screen
+                displayController.changeMessage("Player " + player2.getMarker() + " has won the game!");
                 return;
             }
 
             if (checkTie()) {
-                // update the message on the screen
+                displayController.changeMessage("Game Ended in a Tie!");
                 return;
             }
-            switchTurns();
+            isXTurn = !isXTurn;
+            displayController.changeMessage("Player " + player1.getMarker() + " it is your turn");
         }
 
     };
 
-    {return playerAction, checkForWin, restartGame};
+    const getIsWinner = () => {
+        return isWinner;
+    }
+
+    return {playerAction, checkForWin, restartGame, getIsWinner};
 
 })();
 
@@ -234,5 +232,28 @@ const gameController = (() => {
 const displayController = (() => {
     const spaces = document.querySelectorAll('.space');
     const message = document.querySelector('.message');
-    
+    spaces.forEach((space) => {
+        space.addEventListener('click', (event) => {
+            // if the game is over or the space is already occupied, we don't want to allow a click
+            if (gameController.getIsWinner() || event.target.textContent !== '') {
+                return;
+            } else {
+                gameController.playerAction(parseInt(event.target.dataset.row), parseInt(event.target.dataset.col));
+                populateDisplay();
+            }
+        })
+    });
+
+    const populateDisplay = () => {
+        for (let i = 0; i < spaces.length; i++) {
+            spaces[i].textContent = gameBoard.getPosition(parseInt(spaces[i].dataset.row), parseInt(spaces[i].dataset.col));
+        }
+    };
+
+    const changeMessage = (string) => {
+        message.textContent = string;
+    }
+
+    return {changeMessage};
+
 })();
