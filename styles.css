@@ -107,7 +107,7 @@ body {
   transform: translateY(2px);
 }
 
-.player-info {
+.start {
     display: flex;
     align-items: center;
     padding-top: 2rem;
@@ -115,16 +115,8 @@ body {
     gap: 4rem;
 }
 
-.submit-button {
+.start-button {
     padding-top: 1.5rem;
-}
-
-.player-one, .player-two {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    color: #354259;
-    font-size: 20px;
 }
 
 input[type='text'] {
