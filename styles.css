@@ -153,6 +153,11 @@ input[type='text'] {
     color: #ECE5C7;
 }
 
+.restart {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
 .footer {
     display: flex;
     align-items: center;

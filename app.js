@@ -184,6 +184,8 @@ const gameController = (() => {
         isWinner = false;
         isXTurn = true;
         isTie = false;
+        gameBoard.clearBoard();
+        displayController.changeMessage("Player " + player1.getMarker() + " it is your turn");
     }
 
     // logic for the gameplay
@@ -232,6 +234,13 @@ const gameController = (() => {
 const displayController = (() => {
     const spaces = document.querySelectorAll('.space');
     const message = document.querySelector('.message');
+    const restartBtn = document.querySelector('#restartbtn')
+
+    restartBtn.addEventListener('click', () => {
+        gameController.restartGame();
+        populateDisplay();
+    })
+
     spaces.forEach((space) => {
         space.addEventListener('click', (event) => {
             // if the game is over or the space is already occupied, we don't want to allow a click
