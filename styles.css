@@ -133,8 +133,8 @@ input[type='text'] {
 .space {
     background-color: #354259;
     border: 2px solid #C2DED1;
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
