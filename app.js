@@ -228,10 +228,6 @@ const displayController = (() => {
     const message = document.querySelector('.message');
     const restartBtn = document.querySelector('#restart');
     const startBtn = document.querySelector("#startbtn")
-    const mode = document.querySelector('#mode');
-    // buttons for the different game modes
-    const impossible = document.querySelector("#impossible");
-    const friend = document.querySelector("#friend");
     let isStart = false;
     let gameSelected = false;
     let gameMode;
