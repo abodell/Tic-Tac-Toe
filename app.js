@@ -1,12 +1,98 @@
 "use strict";
 
-const Player = (marker) => {
+const Player = (marker, name) => {
     this.marker = marker;
+    this.name = name;
     const getMarker = () => {
         return marker;
     }
 
-    return {getMarker};
+    const getName = () => {
+        return name;
+    }
+
+    return {getMarker, getName};
+};
+
+const AIPlayer = (marker, name) => {
+    this.marker = marker;
+    this.name = name;
+
+    const getName = () => {
+        return name;
+    };
+
+    const scores = {
+        X: 10,
+        O: -10,
+        tie: 0,
+    };
+
+    const getMarker = () => {
+        return marker;
+    };
+
+    const bestMove = () => {
+        let bestScore = -Infinity;
+        let move;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (gameBoard.getPosition(i, j) == '') {
+                    gameBoard.placeMarker(marker, i, j);
+                    let score = minimax(gameBoard.getBoard(), 0, false);
+                    gameBoard.placeMarker('', i, j);
+                    console.log('score is ' + score);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        move = {i, j};
+                        console.log(move);
+                    }
+                }
+            }
+        }
+        console.log(move);
+        return move;
+    };
+
+    const minimax = (board, depth, isMaximizing) => {
+        let result = gameController.getWinningPlayer();
+        if (result != null) {
+            return scores[result];
+        }
+
+        if (isMaximizing) {
+            let bestScore = -Infinity;
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (gameBoard.getPosition(i,j) == '') {
+                        gameBoard.placeMarker(marker, i, j);
+                        let score  = minimax(board, depth + 1, false);
+                        gameBoard.placeMarker('', i, j);
+                        bestScore = Math.max(bestScore, score);
+                    }
+                }
+            }
+            console.log("line 74 best score is: " + bestScore);
+            return bestScore;
+        } else {
+            let bestScore = Infinity;
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (gameBoard.getPosition(i, j) == '') {
+                        gameBoard.placeMarker('X', i, j);
+                        let score = minimax(board, depth + 1, true);
+                        gameBoard.placeMarker('', i, j);
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+            }
+            console.log('line 88 best score is: ' + bestScore);
+            return bestScore;
+        }
+    };
+
+    return {getMarker, scores, bestMove, minimax, getName};
+
 };
 
 const gameBoard = (() => {
@@ -38,18 +124,25 @@ const gameBoard = (() => {
         }
     };
 
-    return {placeMarker, getPosition, clearBoard};
+    const getBoard = () => {
+        return board;
+    }
+
+    return {placeMarker, getPosition, clearBoard, getBoard};
 
 })();
 
 const gameController = (() => {
-    const player1 = Player('X', "");
-    const player2 = Player('O', "");
-    const numToWin = 3;
 
     let isWinner = false;
     let isXTurn = true;
     let isTie = false;
+    let winningPlayer;
+    let gameMode;
+
+    const player1 = Player('X', 'human');
+    const player2 = AIPlayer('O', 'computer');
+    const numToWin = 3;
 
 
     const checkHorizWin = (row, col, marker) => {
@@ -202,6 +295,7 @@ const gameController = (() => {
             gameBoard.placeMarker(player2.getMarker(), row, col);
             if (checkForWin(row, col, player2.getMarker())) {
                 displayController.changeMessage("Player " + player2.getMarker() + " has won the game!");
+                setWinningPlayer(player2.getMarker());
                 return;
             }
 
@@ -211,14 +305,35 @@ const gameController = (() => {
             }
             isXTurn = !isXTurn;
             displayController.changeMessage("Player " + player1.getMarker() + " it is your turn");
-        }
+        } 
     };
 
     const getIsWinner = () => {
         return isWinner;
     }
 
-    return {playerAction, checkForWin, restartGame, getIsWinner};
+    const setWinningPlayer = (marker) => {
+        winningPlayer = marker;
+    };
+
+    const getWinningPlayer = () => {
+        return winningPlayer;
+    };
+
+    const setGameMode = (mode) => {
+        gameMode = mode;
+    };
+
+    const AIAction = () => {
+        console.log("is this being called");
+        if (player2.getName() == 'computer') {
+            let botmove = player2.bestMove();
+            console.log(botmove);
+            gameBoard.placeMarker(player2.getMarker(), botmove.i, botmove.j);
+        }
+    };
+
+    return {playerAction, checkForWin, restartGame, getIsWinner, getWinningPlayer, setGameMode, AIAction};
 
 })();
 
@@ -237,21 +352,25 @@ const displayController = (() => {
     let gameMode;
 
     impossible.addEventListener('click', () => {
-        mode.textContent = 'Game Mode: Impossible';
+        mode.textContent = 'Game Mode: Unbeatable';
         gameSelected = true;
         gameMode = 'impossible';
+        gameController.setGameMode(gameMode);
     });
 
     friend.addEventListener('click', () => {
         mode.textContent = 'Game Mode: Versus a Friend';
         gameMode = 'Versus a friend';
+        gameController.setGameMode(gameMode);
         gameSelected = true;
     });
 
 
     startBtn.addEventListener('click', () => {
-        isStart = true;
-        startBtn.textContent = 'Game In Progress';
+        if (gameSelected) {
+            isStart = true;
+            startBtn.textContent = 'Game In Progress';
+        }
     });
 
     restartBtn.addEventListener('click', () => {
@@ -270,6 +389,8 @@ const displayController = (() => {
                 return;
             } else {
                 gameController.playerAction(parseInt(event.target.dataset.row), parseInt(event.target.dataset.col));
+                populateDisplay();
+                gameController.AIAction();
                 populateDisplay();
             }
         })
