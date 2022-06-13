@@ -47,10 +47,10 @@ const gameController = (() => {
     const player2 = Player('O', "");
     const numToWin = 3;
 
-
     let isWinner = false;
     let isXTurn = true;
     let isTie = false;
+
 
     const checkHorizWin = (row, col, marker) => {
         // need to traverse left and right to see how many in a row
@@ -212,7 +212,6 @@ const gameController = (() => {
             isXTurn = !isXTurn;
             displayController.changeMessage("Player " + player1.getMarker() + " it is your turn");
         }
-
     };
 
     const getIsWinner = () => {
@@ -227,36 +226,28 @@ const gameController = (() => {
 const displayController = (() => {
     const spaces = document.querySelectorAll('.space');
     const message = document.querySelector('.message');
-    const restartBtn = document.querySelector('#restartbtn');
+    const restartBtn = document.querySelector('#restart');
     const startBtn = document.querySelector("#startbtn")
     const mode = document.querySelector('#mode');
     // buttons for the different game modes
-    const easy = document.querySelector('#easy');
-    const medium = document.querySelector('#medium');
     const impossible = document.querySelector("#impossible");
     const friend = document.querySelector("#friend");
     let isStart = false;
     let gameSelected = false;
-
-    easy.addEventListener('click', () => {
-        mode.textContent = 'Game Mode: Easy';
-        gameSelected = true;
-    });
-
-    medium.addEventListener('click', () => {
-        mode.textContent = 'Game Mode: Medium';
-        gameSelected = true;
-    });
+    let gameMode;
 
     impossible.addEventListener('click', () => {
         mode.textContent = 'Game Mode: Impossible';
         gameSelected = true;
+        gameMode = 'impossible';
     });
 
     friend.addEventListener('click', () => {
         mode.textContent = 'Game Mode: Versus a Friend';
+        gameMode = 'Versus a friend';
         gameSelected = true;
     });
+
 
     startBtn.addEventListener('click', () => {
         isStart = true;
@@ -265,6 +256,7 @@ const displayController = (() => {
 
     restartBtn.addEventListener('click', () => {
         isStart = false;
+        gameSelected = false;
         startBtn.textContent = 'Click Here to Start';
         mode.textContent = "Select a Game Mode";
         gameController.restartGame();
