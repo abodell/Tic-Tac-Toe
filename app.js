@@ -227,34 +227,9 @@ const displayController = (() => {
     const spaces = document.querySelectorAll('.space');
     const message = document.querySelector('.message');
     const restartBtn = document.querySelector('#restart');
-    const startBtn = document.querySelector("#startbtn")
-    let isStart = false;
-    let gameSelected = false;
     let gameMode;
 
-    impossible.addEventListener('click', () => {
-        mode.textContent = 'Game Mode: Impossible';
-        gameSelected = true;
-        gameMode = 'impossible';
-    });
-
-    friend.addEventListener('click', () => {
-        mode.textContent = 'Game Mode: Versus a Friend';
-        gameMode = 'Versus a friend';
-        gameSelected = true;
-    });
-
-
-    startBtn.addEventListener('click', () => {
-        isStart = true;
-        startBtn.textContent = 'Game In Progress';
-    });
-
     restartBtn.addEventListener('click', () => {
-        isStart = false;
-        gameSelected = false;
-        startBtn.textContent = 'Click Here to Start';
-        mode.textContent = "Select a Game Mode";
         gameController.restartGame();
         populateDisplay();
     });
@@ -262,7 +237,7 @@ const displayController = (() => {
     spaces.forEach((space) => {
         space.addEventListener('click', (event) => {
             // if the game is over or the space is already occupied, we don't want to allow a click
-            if (gameController.getIsWinner() || !isStart || event.target.textContent !== '' || !gameSelected) {
+            if (gameController.getIsWinner() || event.target.textContent !== '') {
                 return;
             } else {
                 gameController.playerAction(parseInt(event.target.dataset.row), parseInt(event.target.dataset.col));
