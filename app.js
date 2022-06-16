@@ -230,11 +230,15 @@ const gameController = (() => {
 
     const minimax = (board, depth, isMaximizing, row, col, marker) => {
         checkTie();
-        checkForWin(row, col, marker);
+        checkForWin(row, col, marker); // checks if the previous placement resulted in a win or tie
         let result = getWinningMarker();
         if (result != null) {
-            return scores[result];
+            return scores[result] - depth;
         }
+
+        setWinningMarker(null);
+        setIsWinner(false);
+        setIsTie(false);
 
         if (isMaximizing) {
             let bestScore = -Infinity;
