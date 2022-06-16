@@ -1,8 +1,8 @@
 "use strict";
 
 const scores = {
-    'X': 10,
-    'O': -10,
+    'X': -10,
+    'O': 10,
     'tie': 0,
 };
 
@@ -210,68 +210,66 @@ const gameController = (() => {
     };
 
     const bestMove = () => {
-        let bestScore = Infinity;
-        let aiMove;
+        let bestScore = -Infinity;
+        let move;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                if (gameBoard.getPosition(i, j) == '') {
+                if (gameBoard.getPosition(i,j) == '') {
                     gameBoard.placeMarker(player2.getMarker(), i, j);
-                    let score = minimax(gameBoard.getBoard(), 0, false);
+                    let score = minimax(gameBoard.getBoard(), 0, false, i, j, player2.getMarker());
                     gameBoard.placeMarker('', i, j);
-                    if (score < bestScore) {
+                    if (score > bestScore) {
                         bestScore = score;
-                        aiMove = {i, j};
+                        move = {i , j};
                     }
                 }
             }
         }
-        return aiMove;
+        return move;
     };
 
-    const minimax = (board, depth, isMaximizing) => {
+    const minimax = (board, depth, isMaximizing, row, col, marker) => {
+        checkTie();
+        checkForWin(row, col, marker);
         let result = getWinningMarker();
-        console.log(getWinningMarker());
         if (result != null) {
             return scores[result];
         }
+
         if (isMaximizing) {
             let bestScore = -Infinity;
             for (let i = 0; i < 3; i++) {
                 for (let j = 0; j < 3; j++) {
-                    if (gameBoard.getPosition(i, j) == '') {
-                        gameBoard.placeMarker(player2.getMarker(), i, j);
-                        checkForWin(i, j, player2.getMarker());
-                        checkTie();
-                        let score = minimax(board, depth + 1, false);
-                        gameBoard.placeMarker('', i, j);
+                    if (board[i][j] == '') {
+                        board[i][j] = player2.getMarker();
+                        let score = minimax(board,depth + 1, false, i, j, player2.getMarker());
+                        board[i][j] = '';
                         bestScore = Math.max(score, bestScore);
                     }
                 }
             }
+            setWinningMarker(null);
             setIsWinner(false);
             setIsTie(false);
-            setWinningMarker(null);
             return bestScore;
         } else {
             let bestScore = Infinity;
             for (let i = 0; i < 3; i++) {
                 for (let j = 0; j < 3; j++) {
-                    if (gameBoard.getPosition(i, j) == '') {
-                        gameBoard.placeMarker(player1.getMarker(), i, j);
-                        checkForWin(i, j, player1.getMarker());
-                        checkTie();
-                        let score = minimax(board, depth + 1, true);
-                        gameBoard.placeMarker('', i, j);
+                    if (board[i][j] == '') {
+                        board[i][j] = player1.getMarker();
+                        let score = minimax(board, depth + 1, true, i, j, player1.getMarker());
+                        board[i][j] = '';
                         bestScore = Math.min(score, bestScore);
                     }
                 }
             }
+            setWinningMarker(null);
             setIsWinner(false);
             setIsTie(false);
-            setWinningMarker(null);
             return bestScore;
         }
-    };
+    }
 
     // logic for the gameplay
     const playerAction = (row, col) => {
@@ -292,24 +290,7 @@ const gameController = (() => {
                 displayController.changeMessage("The AI has won the game!");
                 return;
             }
-            //displayController.changeMessage("Player " + player2.getMarker() + " it is your turn");
-            
-        } /*else {
-            let choice = bestMove();
-            console.log(choice);
-            gameBoard.placeMarker(player2.getMarker(), choice.i, choice.j);
-            if (checkForWin(row, col, player2.getMarker())) {
-                displayController.changeMessage("Player " + player2.getMarker() + " has won the game!");
-                return;
-            }
-
-            if (checkTie()) {
-                displayController.changeMessage("Game Ended in a Tie!");
-                return;
-            }
-            isXTurn = !isXTurn;
-            displayController.changeMessage("Player " + player1.getMarker() + " it is your turn");
-        }*/
+        }
     };
 
     const getIsWinner = () => {
