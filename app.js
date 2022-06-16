@@ -66,6 +66,10 @@ const gameController = (() => {
         winningMarker = marker;
     };
 
+    const setIsTie = (string) => {
+        isTie = string;
+    }
+
     const getWinningMarker = () => {
         return winningMarker;
     }
@@ -202,10 +206,11 @@ const gameController = (() => {
         isTie = false;
         gameBoard.clearBoard();
         displayController.changeMessage("Player " + player1.getMarker() + " it is your turn");
+        setWinningMarker(null);
     };
 
     const bestMove = () => {
-        let bestScore = -Infinity;
+        let bestScore = Infinity;
         let aiMove;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
@@ -213,7 +218,7 @@ const gameController = (() => {
                     gameBoard.placeMarker(player2.getMarker(), i, j);
                     let score = minimax(gameBoard.getBoard(), 0, false);
                     gameBoard.placeMarker('', i, j);
-                    if (score > bestScore) {
+                    if (score < bestScore) {
                         bestScore = score;
                         aiMove = {i, j};
                     }
@@ -225,6 +230,7 @@ const gameController = (() => {
 
     const minimax = (board, depth, isMaximizing) => {
         let result = getWinningMarker();
+        console.log(getWinningMarker());
         if (result != null) {
             return scores[result];
         }
@@ -234,7 +240,8 @@ const gameController = (() => {
                 for (let j = 0; j < 3; j++) {
                     if (gameBoard.getPosition(i, j) == '') {
                         gameBoard.placeMarker(player2.getMarker(), i, j);
-                        checkForWin(i, j, player2.getMarker())
+                        checkForWin(i, j, player2.getMarker());
+                        checkTie();
                         let score = minimax(board, depth + 1, false);
                         gameBoard.placeMarker('', i, j);
                         bestScore = Math.max(score, bestScore);
@@ -242,6 +249,8 @@ const gameController = (() => {
                 }
             }
             setIsWinner(false);
+            setIsTie(false);
+            setWinningMarker(null);
             return bestScore;
         } else {
             let bestScore = Infinity;
@@ -250,6 +259,7 @@ const gameController = (() => {
                     if (gameBoard.getPosition(i, j) == '') {
                         gameBoard.placeMarker(player1.getMarker(), i, j);
                         checkForWin(i, j, player1.getMarker());
+                        checkTie();
                         let score = minimax(board, depth + 1, true);
                         gameBoard.placeMarker('', i, j);
                         bestScore = Math.min(score, bestScore);
@@ -257,6 +267,8 @@ const gameController = (() => {
                 }
             }
             setIsWinner(false);
+            setIsTie(false);
+            setWinningMarker(null);
             return bestScore;
         }
     };
@@ -330,8 +342,6 @@ const displayController = (() => {
     spaces.forEach((space) => {
         space.addEventListener('click', (event) => {
             // if the game is over or the space is already occupied, we don't want to allow a click
-            console.log(gameController.getIsWinner());
-            console.log(event.target.textContent);
             if (gameController.getIsWinner() || event.target.textContent !== '') {
                 return;
             } else if (gameController.getIsXTurn()) {
